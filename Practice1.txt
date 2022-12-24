@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: Myapp()));
+}
+
+class Myapp extends StatefulWidget {
+  @override
+  State<Myapp> createState() => _MyappState();
+}
+
+class _MyappState extends State<Myapp> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          height: 40,
+          width: 200,
+          color: Colors.cyan,
+          child: Center(
+              child: (Text("Instagram", style: TextStyle(fontSize: 30)))),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.greenAccent,
+          child: Icon(Icons.favorite),
+          foregroundColor: Colors.amberAccent),
+      appBar: AppBar(
+        title: Text(
+          "Menu",
+          style: TextStyle(fontSize: 20),
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+}
+

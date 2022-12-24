@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(new MaterialApp(
+    home: new Myapp(),
+  ));
+}
+
+class Myapp extends StatefulWidget {
+  @override
+  _MyappState createState() => _MyappState();
+}
+
+class _MyappState extends State<Myapp> {
+  double valueadd = 30;
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Kumara"),
+      ),
+      body: Center(
+          child: Text(
+        "??",
+        style: TextStyle(fontSize: valueadd),
+      )),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.yellow,
+        foregroundColor: Colors.red,
+        child: Icon(Icons.face_rounded, size: 35),
+        onPressed: () {
+          setState(() {
+            valueadd += 9;
+            print(valueadd);
+          });
+        },
+      ),
+    );
+  }
+}
+
