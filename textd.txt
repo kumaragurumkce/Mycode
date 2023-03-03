@@ -1,0 +1,101 @@
+// import the required packages
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+
+void main() => runApp(TextToSpeechApp());
+
+class TextToSpeechApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Text to Speech App',
+      home: TextToSpeechPage(),
+    );
+  }
+}
+
+class TextToSpeechPage extends StatefulWidget {
+  @override
+  _TextToSpeechPageState createState() => _TextToSpeechPageState();
+}
+
+class _TextToSpeechPageState extends State<TextToSpeechPage> {
+  final FlutterTts flutterTts = FlutterTts();
+
+  String _text = 'Hello, world!';
+  String _filePath;
+
+  Future<void> _speak() async {
+    await flutterTts.setLanguage('en-US');
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setVolume(1);
+    await flutterTts.synthesizeToFile(_text, _filePath);
+  }
+
+  Future<void> _download() async {
+    final response = await http.get(Uri.parse('https://translate.google.com/translate_tts?ie=UTF-8&q=$_text&tl=en&client=tw-ob'));
+
+    if (response.statusCode == 200) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = 'speech.mp3';
+      final filePath = '${appDir.path}/$fileName';
+
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+
+      setState(() {
+        _filePath = filePath;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Text to Speech App'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextField(
+              onChanged: (text) {
+                _text = text;
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter text',
+              ),
+            ),
+            SizedBox(height: 16),
+            RaisedButton(
+              onPressed: _speak,
+              child: Text('Speak'),
+            ),
+            SizedBox(height: 16),
+            RaisedButton(
+              onPressed: _download,
+              child: Text('Download'),
+            ),
+            SizedBox(height: 16),
+            if (_filePath != null) ...[
+              Text('Downloaded file path: $_filePath'),
+              SizedBox(height: 16),
+              RaisedButton(
+                onPressed: () => flutterTts.play(_filePath),
+                child: Text('Play'),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
